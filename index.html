@@ -13,6 +13,18 @@
     align-items: center;
 }
 
+#play {
+    margin-top: 15px;
+}
+
+#results {
+    border: solid black 2px;
+    width: 450px;
+    min-height: 150px;
+    max-height: fit-content;
+    margin-bottom: 15px;
+}
+
 .notPressed {
     background-color: rgb(0, 0, 0);
     width: 150px;
@@ -28,8 +40,12 @@
 </style>
 <body>
     <div id="container">
-        <h3>The computer chose...</h3>
-        <p id="gameResult">This!</p>
+        <h3>Rock, Paper, Scissors!</h3>
+        <p id="gameResult"></p>
+        <div id="playerStat">Player: 0 / 5</div>
+        <div id="computerStat">Computer: 0 / 5</div>
+        <p>Log:</p>
+        <div id= "results"></div>
         <div id="btnContainer">
             <button id="Rock" class="notPressed">Rock</button>
             <button id="Paper" class="notPressed">Paper</button>
@@ -46,10 +62,11 @@ const btnShotgun = document.getElementById("shotgun");
 const btnPlay = document.getElementById("play");
 
 const rstWindow = document.getElementById("gameResult");
+const rstContainer = document.getElementById("results");
 
 const btns = document.querySelectorAll('#Rock, #Paper, #Scissor');
 
-let playerChoice = "nullo";
+
 
 let disableButtons = () => {
     btns.forEach((button) => {
@@ -59,7 +76,7 @@ let disableButtons = () => {
 
 let enableButtons = () => {
     btns.forEach((button) => {
-        button.disabled = false;
+        button.setAttribute("class", "notPressed");
     });
 }
 
@@ -67,12 +84,19 @@ btns.forEach( (button) => {
 button.addEventListener('click', (e) => {
     e.target.setAttribute('class', "pressed");
     playerChoice = e.target.id;
-    })
+    });
 });
 
 btnPlay.addEventListener('click', () => {
     playRound();
+    btns.forEach((button) => {
+        button.disabled = false;
+    });
 })
+
+let playerChoice = "nullo";
+let rstId = 1;
+
 
 function computerPlay () {
         let moves = ["Rock", "Paper", "Scissor"];
@@ -80,28 +104,48 @@ function computerPlay () {
         return moves[random];
         };
 
-  
+
+
+function appendResult(id) {
+    let apenndix = rstContainer.appendChild(document.createElement("p"));
+            apenndix.setAttribute("id", `res${id}`);
+            document.getElementById(`res${id}`).innerText = `Round ${rstId}: ${rstWindow.innerText}`;
+
+};
+
+let playerWinCount = 0;
+let computerWinCount = 0;
+
 function playRound () {
         
         let computerSelection = computerPlay();
         let playerSelection = playerChoice;
-
-
-
+        enableButtons();
+        
+    if (rstId <= 5) {
         if (computerSelection === playerSelection) {
             rstWindow.innerText = `Draw! Computer played ${computerSelection} and Player played ${playerSelection}`;
+            appendResult(rstId);
+            rstId += 1;
         } else if (computerSelection == "Rock" && playerSelection == "Scissor" || computerSelection == "Scissor" && playerSelection == "Paper" || computerSelection == "Paper" && playerSelection == "Rock") {
             rstWindow.innerText = `Computer's ${computerSelection} beats player's ${playerSelection}`;
-            return computerWinCount += 1;
+            appendResult(rstId);
+            rstId += 1;
+            computerWinCount += 1;
         } else if (playerSelection == "Rock" && computerSelection == "Scissor" || playerSelection == "Scissor" && computerSelection == "Paper" || playerSelection == "Paper" && computerSelection == "Rock") {
             rstWindow.innerText = `Players's ${playerSelection} beats computer's ${computerSelection}`;
-            return playerWinCount += 1;
+            appendResult(rstId);
+            rstId += 1;
+            playerWinCount += 1;
         } else {
             console.log(`Computer wins because you idiot chose ${playerSelection}`);
         };
-    };
+
+        document.getElementById("playerStat").innerText = `Player ${playerWinCount} / 5`;
+        document.getElementById("computerStat").innerText = `Computer ${computerWinCount} / 5`;
+    }};
         
-    function game () {
+  /*  function game () {
 
         for (let i = 0; i <= 4; i++) {
             playRound();
@@ -121,7 +165,7 @@ function playRound () {
             playerWinCount = 0;
             computerWinCount = 0;
         };
-    };
+    }; */
 
 /* btnRock.addEventListener('click', () => {
     btnRock.setAttribute('class', "pressed");
